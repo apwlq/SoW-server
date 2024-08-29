@@ -109,40 +109,40 @@ fun createAndShowTray() {
     val tray = SystemTray.getSystemTray()
     val imageStream = Thread.currentThread().contextClassLoader.getResourceAsStream("logo.png")
     val image = ImageIO.read(imageStream)
-    val trayIcon = TrayIcon(image, "SOW Server")
+    val trayIcon = TrayIcon(image, "SoW Server")
     trayIcon.isImageAutoSize = true
 
     val popup = PopupMenu()
 
     // 스크린 선택 메뉴
-    val screenMenu = Menu("Select Screen")
+    val screenMenu = Menu("화면 선택")
     val screens = GraphicsEnvironment.getLocalGraphicsEnvironment().screenDevices
     screens.forEachIndexed { index, screen ->
-        val screenItem = MenuItem("Screen $index")
+        val screenItem = MenuItem("${index}번 화면")
         screenItem.addActionListener {
             selectedMonitor = screen
             monitorBounds = screen.defaultConfiguration.bounds
-            trayIcon.displayMessage("Screen Selected", "Now capturing Screen $index", TrayIcon.MessageType.INFO)
+            trayIcon.displayMessage("화면 선택됨", "현재 ${index}번 화면이 송출되고 있습니다.", TrayIcon.MessageType.INFO)
         }
         screenMenu.add(screenItem)
     }
     popup.add(screenMenu)
 
     // 캡처 시작/중지 토글
-    val captureItem = MenuItem("Stop Capture")
+    val captureItem = MenuItem("송출 중지")
     captureItem.addActionListener {
         isCapturing = !isCapturing
-        captureItem.label = if (isCapturing) "Stop Capture" else "Start Capture"
-        val status = if (isCapturing) "started" else "stopped"
-        trayIcon.displayMessage("Capture $status", "Screen capture has been $status", TrayIcon.MessageType.INFO)
+        captureItem.label = if (isCapturing) "송출 중지" else "송출 시작"
+        val status = if (isCapturing) "시작" else "중지"
+        trayIcon.displayMessage("송출 ${status}됨", "화면 송출이 ${status}되었습니다.", TrayIcon.MessageType.INFO)
     }
     popup.add(captureItem)
 
     // 버전 정보 표시
-    val versionItem = MenuItem("Show Version")
+    val versionItem = MenuItem("버전 정보")
     versionItem.addActionListener {
         val version = getVersion()
-        trayIcon.displayMessage("Version Info", "SOW Server version: $version", TrayIcon.MessageType.INFO)
+        trayIcon.displayMessage("버전 정보", "SoW Server $version", TrayIcon.MessageType.INFO)
     }
     popup.add(versionItem)
 
@@ -150,7 +150,7 @@ fun createAndShowTray() {
     popup.addSeparator()
 
     // 종료 메뉴 항목
-    val exitItem = MenuItem("Exit")
+    val exitItem = MenuItem("종료")
     exitItem.addActionListener { stop() }
     popup.add(exitItem)
 
@@ -158,9 +158,9 @@ fun createAndShowTray() {
 
     // 트레이 아이콘 더블 클릭 이벤트
     trayIcon.addActionListener {
-        val message = if (isCapturing) "SOW Server is running and capturing the screen."
-        else "SOW Server is running but screen capture is paused."
-        trayIcon.displayMessage("SOW Server Status", message, TrayIcon.MessageType.INFO)
+        val message = if (isCapturing) "SoW Server 가 실행중이며, 화면이 송출되고 있습니다."
+        else "SoW Server 가 실행중이지만, 화면이 송출되고 있지 않습니다."
+        trayIcon.displayMessage("SoW Server", message, TrayIcon.MessageType.INFO)
     }
 
     try {
